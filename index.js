@@ -41,18 +41,33 @@ const pokedex = [
   },
 ];
 
+let pokemon = undefined;
+
 // Rotas
 app.get("/", (req, res) => {
-  res.render("index", { pokedex });
+  res.render("index", { pokedex, pokemon });
 });
 
-app.post("/add", (req, res) => {
+app.post("/create", (req, res) => {
   const pokemon = req.body;
-
+  pokemon.id = pokedex.length + 1;
   pokedex.push(pokemon);
-
   res.redirect("/");
+});
 
+app.get("/detalhes/:id", (req, res) => {
+  const id = +req.params.id;
+  pokemon = pokedex.find((pokemon) => pokemon.id === id);
+  res.redirect("/");
+});
+
+app.post("/update/:id", (req, res) => {
+  const id = +req.params.id - 1;
+  const newPokemon = req.body;
+  newPokemon.id = id + 1
+  pokedex[id] = newPokemon;
+  pokemon = undefined;
+  res.redirect("/");
 });
 
 app.listen(3000, () =>
